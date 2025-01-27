@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公交线路车辆时刻表信息</title>
+    <!-- 引入 MDUI 的 CSS 文件（版本 1） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/css/mdui.min.css">
+    <!-- 引入 MDUI 的 JavaScript 文件（版本 1） -->
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
+    <style>
+        /* 将导航栏颜色改为蓝色，并将导航栏字体改为白色 */
+        .mdui-appbar {
+            background-color: white; 
+            color: white; 
+        }
+        /* 为页面主体添加顶部内边距，避免与导航栏重叠 */
+        .mdui-container {
+            padding-top: 64px; 
+        }
+        /* 修改导航栏中的按钮和标题颜色为白色 */
+        .mdui-appbar a,.mdui-appbar i {
+            color: black; 
+        }
+    </style>
+    <script>
+        async function fetchBusInfo() {
+            const lineNo = document.getElementById('lineNo').value;
+            if (!lineNo) {
+                alert('请输入线路号！');
+                return;
+            }
+
+            const apiUrl = `https://busapi3.xlrt.top/api/proxy?lineNo=${lineNo}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // 打印数据到控制台以检查
+                console.log(data);  // <-- 这里打印API返回的数据
+
+                const resultDiv = document.getElementById('result');
+                resultDiv.innerHTML = '';
+
+                if (data && data.length > 0) {
+                    let tableHTML = `
+                        <table class="mdui-table mdui-table-hoverable mdui-shadow-1">
+                            <thead>
+                                <tr>
+                                    <th>车号</th>
+                                    <th>上行首站发车1</th>
+                                    <th>上行末站到站1</th>
+                                    <th>下行首站发车1</th>
+                                    <th>下行末站到站1</th>
+                                    <th>上行首站发车2</th>
+                                    <th>上行末站到站2</th>
+                                    <th>下行首站发车2</th>
+                                    <th>下行末站到站2</th>
+                                    <th>上行首站发车3</th>
+                                    <th>上行末站到站3</th>
+                                    <th>下行首站发车3</th>
+                                    <th>下行末站到站3</th>
+                                    <th>上行首站发车4</th>
+                                    <th>上行末站到站4</th>
+                                    <th>下行首站发车4</th>
+                                    <th>下行末站到站4</th>
+                                    <th>上行首站发车5</th>
+                                    <th>上行末站到站5</th>
+                                    <th>下行首站发车5</th>
+                                    <th>下行末站到站5</th>
+                                    <th>上行首站发车6</th>
+                                    <th>上行末站到站6</th>
+                                    <th>下行首站发车6</th>
+                                    <th>下行末站到站6</th>
+                                    <th>上行首站发车7</th>
+                                    <th>上行末站到站7</th>
+                                    <th>下行首站发车7</th>
+                                    <th>下行末站到站7</th>
+                                    <th>上行首站发车8</th>
+                                    <th>上行末站到站8</th>
+                                    <th>下行首站发车8</th>
+                                    <th>下行末站到站8</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+
+                    data.forEach(bus => {
+                        const formatTime = (time) => time === '00:00' || time == null ? '暂无数据' : time;
+                        tableHTML += `
+                            <tr>
+                                <td>${bus.busNo}</td>
+                                <td>${formatTime(bus.startTime1)}</td>
+                                <td>${formatTime(bus.endTime1)}</td>
+                                <td>${formatTime(bus.startTime2)}</td>
+                                <td>${formatTime(bus.endTime2)}</td>
+                                <td>${formatTime(bus.startTime3)}</td>
+                                <td>${formatTime(bus.endTime3)}</td>
+                                <td>${formatTime(bus.startTime4)}</td>
+                                <td>${formatTime(bus.endTime4)}</td>
+                                <td>${formatTime(bus.startTime5)}</td>
+                                <td>${formatTime(bus.endTime5)}</td>
+                                <td>${formatTime(bus.startTime6)}</td>
+                                <td>${formatTime(bus.endTime6)}</td>
+                                <td>${formatTime(bus.startTime7)}</td>
+                                <td>${formatTime(bus.endTime7)}</td>
+                                <td>${formatTime(bus.startTime8)}</td>
+                                <td>${formatTime(bus.endTime8)}</td>
+                                <td>${formatTime(bus.startTime9)}</td>
+                                <td>${formatTime(bus.endTime9)}</td>
+                                <td>${formatTime(bus.startTime10)}</td>
+                                <td>${formatTime(bus.endTime10)}</td>
+                                <td>${formatTime(bus.startTime11)}</td>
+                                <td>${formatTime(bus.endTime11)}</td>
+                                <td>${formatTime(bus.startTime12)}</td>
+                                <td>${formatTime(bus.endTime12)}</td>
+                                <td>${formatTime(bus.startTime13)}</td>
+                                <td>${formatTime(bus.endTime13)}</td>
+                                <td>${formatTime(bus.startTime14)}</td>
+                                <td>${formatTime(bus.endTime14)}</td>
+                                <td>${formatTime(bus.startTime15)}</td>
+                                <td>${formatTime(bus.endTime15)}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tableHTML += '</tbody></table>';
+                    resultDiv.innerHTML = tableHTML;
+                } else {
+                    resultDiv.innerHTML = '<p class="mdui-typo">未找到相关信息。</p>';
+                }
+            } catch (error) {
+                console.error('API 调用失败:', error);
+                alert('无法获取公交信息，请稍后重试。');
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- 响应式导航栏 -->
+    <header class="mdui-appbar mdui-appbar-fixed">
+        <div class="mdui-toolbar mdui-color-theme">
+            <a href="#" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-drawer="{target: '#drawer'}">
+                <i class="mdui-icon material-icons">menu</i>
+            </a>
+            <a href="#" class="mdui-typo-title">公交线路实时信息</a>
+        </div>
+    </header>
+    <div class="mdui-drawer" id="drawer">
+        <div class="mdui-list">
+            <a href="/businfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">directions_bus</i>
+                <div class="mdui-list-item-content">公交线路车辆实时信息</div>
+            </a>
+            <a href="/lineinfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
+                <div class="mdui-list-item-content">公交线路运营实时信息</div>
+            </a>
+            <a href="/billinfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
+                <div class="mdui-list-item-content">公交线路车辆时刻表信息</div>
+            </a>
+        </div>
+    </div>
+    <div class="mdui-container">
+        <h1 class="mdui-typo-display-0">公交线路车辆时刻表信息</h1>
+        <div class="mdui-alert mdui-color-yellow-100">
+            <div class="mdui-alert-icon">
+                <i class="mdui-icon material-icons">warning</i>
+            </div>
+            <div class="mdui-alert-content">
+                数据仅供参考，请以实际为准！因不可抗力因素，本页面只能呈现一部分数据，敬请谅解。
+            </div>
+        </div>
+        <p class="mdui-typo-body-1">请输入公交线路号：</p>
+        <div class="mdui-textfield mdui-textfield-floating-label">
+            <input type="text" id="lineNo" class="mdui-textfield-input" placeholder="例如：38">
+        </div>
+        <button class="mdui-btn mdui-btn-raised mdui-ripple" onclick="fetchBusInfo()">查询</button>
+        <div id="result" style="margin-top: 20px;"></div>
+    </div>
+    <script>
+        // 初始化 MDUI 组件
+        document.addEventListener("DOMContentLoaded", function() {
+            new mdui.Drawer('#drawer');
+        });
+    </script>
+</body>
+</html>

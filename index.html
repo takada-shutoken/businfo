@@ -3,62 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>公交信息查询</title>
-    <script>
-        async function fetchBusInfo() {
-            // 获取用户输入的线路号
-            const lineNo = document.getElementById('lineNo').value;
-
-            if (!lineNo) {
-                alert('请输入线路号！');
-                return;
-            }
-
-            // 构造 API 地址
-            const apiUrl = `http://49.232.246.198:3000/proxy?lineNo=${lineNo}`;
-
-            try {
-                // 调用 API 获取数据
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                // 清空之前的结果
-                const resultDiv = document.getElementById('result');
-                resultDiv.innerHTML = '';
-
-                // 如果有返回数据，展示到页面上
-                if (data && data.length > 0) {
-                    data.forEach(bus => {
-                    const willRunText = bus.willRun === 1 ? '运营' : '非运营';
-                        const busInfo = `
-                            <div>
-                                <p>车辆编号: ${bus.busNo}</p>
-                                <p>运营设置: ${willRunText}</p>
-                                <p>发车时间: ${bus.departTime}</p>
-                                <p>数据时间: ${bus.siteTime}</p>
-                                <p>计划发车时间: ${bus.planTime}</p>
-                                <p>已运行次数: ${bus.singleA}次</p>
-                                
-                                <hr>
-                            </div>
-                        `;
-                        resultDiv.innerHTML += busInfo;
-                    });
-                } else {
-                    resultDiv.innerHTML = '<p>未找到相关信息。</p>';
-                }
-            } catch (error) {
-                console.error('API 调用失败:', error);
-                alert('无法获取公交信息，请稍后重试。');
-            }
-        }
-    </script>
+    <title>公交信息导航</title>
+    <!-- 引入 MDUI 的 CSS 文件（版本 1） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/css/mdui.min.css">
+    <!-- 引入 MDUI 的 JavaScript 文件（版本 1） -->
+    <script src="https://cdn.jsdelivr.net/npm/mdui@1.0.2/dist/js/mdui.min.js"></script>
 </head>
 <body>
-    <h1>公交信息查询</h1>
-    <p>请输入公交线路号：</p>
-    <input type="text" id="lineNo" placeholder="例如：38">
-    <button onclick="fetchBusInfo()">查询</button>
-    <div id="result" style="margin-top: 20px;"></div>
+    <div class="mdui-container">
+        <h1 class="mdui-typo-display-0 mdui-text-center">请选择要查询的实时信息</h1>
+        <div class="mdui-list">
+            <a href="/businfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">directions_bus</i>
+                <div class="mdui-list-item-content">公交线路车辆实时信息</div>
+            </a>
+            <a href="/lineinfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
+                <div class="mdui-list-item-content">公交线路运营实时信息</div>
+            </a>
+            <a href="/lineinfo.html" class="mdui-list-item mdui-ripple">
+                <i class="mdui-list-item-icon mdui-icon material-icons">timeline</i>
+                <div class="mdui-list-item-content">公交线路车辆时刻表信息</div>
+            </a>
+        </div>
+    </div>
 </body>
 </html>
